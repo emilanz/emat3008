@@ -7,65 +7,50 @@ from odeSolver import *
 #initial conditions from isolated periodic orbit
 X0 = [0.2,0.2]
 
-def shooting():
-    X_solution, t = solve_ode(dX, X0, 0, 100, 0.01, 'rk4')
+def shooting(ODE, X0, T):
+    """
+    A function that uses numerical shooting to find limit cycle oscillations of 
+    any given ODE.
+
+    Parameters
+    ----------
+    ODE : function
+        The set of first order ODEs that represent the ODE wanting to be solved.
+        Must return an numpy.array
+    X0 : numpy.array
+        The initial guess of the initial values for the limit cycle oscillation.
+    T0 : 
+        The initial guess of the initial period of oscillation guess.
+    Returns
+    -------
+    Returns a numpy.array containing the corrected initial values for the limit
+    cycle oscillation. If numerical root finder fails, will return empty array.
+    
+    """
+    X_solution, t = solve_ode(ODE, X0, 0, 100, 0.01, 'rk4')
     plt.plot(t, X_solution)
     plt.show()
     #root-finding
-    sol = fsolve(lambda U, f: shoot(f, U), [1,1,18], dX) # need to make own root-finding
+    sol = fsolve(lambda U, f: shoot(f, U), np.append(X0, T), ODE) # need to make own root-finding
     U0 = sol[:-1]
     T = sol[-1]
     print('U0: ', U0)
     print('Period: ',T)
-    X_solution, t = solve_ode(dX, U0, 0, T, 0.01, 'rk4')
+    X_solution, t = solve_ode(ODE, U0, 0, T, 0.01, 'rk4')
     plt.plot(t, X_solution)
     plt.show()
 
 #finding residue of integration
 def integral_res(method, f, X0, t0, T):
-    X_solution, t = solve_ode(dX, X0, t0, T, 0.001, method)
+    X_solution, t = solve_ode(f, X0, t0, T, 0.001, method)
     return X_solution[-1] - X0
 
 #phase condition
 def phase(f, X0):
     return np.array([f(X0, 0)[0]])
 
-#singular shot 
+#singular shot
 def shoot(f, X):
     X0 = X[:2]
     T = X[-1]
-    return np.concatenate((integral_res('rk4', dX, X0, 0, T), phase(dX, X0)))
-
-#modelling equations for predator prey equations; can replace with any ODE modelled as series of first order eqns
-def dX(X, t):
-    a = 1
-    d = 0.1
-    b = 0.2
-    x, y = X
-    dx = x*(1-x) - (a*x*y)/(d+x)
-    dy = b*y*(1-y/x)
-    dX = [dx,dy]
-    return np.array(dX)
-
-#newton-raphson method for root-finding
-def root_finder(f, XO, dX):
-    X = X0
-    fX = f(X, t)[1]
-    tol = 1e-6
-    print(fX)
-
-    for iteration in range(100):
-        if abs(fX) < tol:
-            return X
-    
-        fpX = dX(X, t)[1]
-        if fpX < tol:
-            break
-        
-        X = X - fX/fpX
-        fX = f(X)[1]
-    
-    return X
-            
-root_finder(lambda U, f: shoot(f, U), [1,1,18], dX)
-        
+    return np.concatenate((integral_res('rk4', f, X0, 0, T), phase(f, X0)))

@@ -24,6 +24,9 @@ def solve_to(xn, tn, tf, delta_tmax,f, method):
         step_function = RK4_step
     
     #looping until x(tf) found
+    print('tn:', tn)
+    print('tf:', tf)
+
     while tn + delta_tmax < tf: 
         xn, tn = step_function(f, xn, tn, delta_tmax)
         x.append(xn)
