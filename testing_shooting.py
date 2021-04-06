@@ -9,6 +9,43 @@ def dX(X, t):
     dx = x*(1-x) - (a*x*y)/(d+x)
     dy = b*y*(1-y/x)
     dX = [dx,dy]
-    return np.array(dX)
+    return np.array(dX), t
 
-shooting(dX, np.array([1,1]), 18)
+#shooting(dX, np.array([1,1]), 18)
+
+def exact_U(t):
+    Beta = 8
+    phase = 0
+    u1 = np.sqrt(Beta)*np.cos(t + phase)
+    u2 = np.sqrt(Beta)*np.sin(t + phase)
+    return np.array([u1, u2])
+
+def dU_2d(U, t):
+    u1, u2 = U
+    Beta = 8
+    sigma = -1
+    du1 = Beta*u1 - u2 + sigma*u1*(u1*u1 + u2*u2)
+    du2 = u1 + Beta*u2 + sigma*u2*(u1*u1 + u2*u2)
+    return np.array([du1, du2])
+
+def dU_3d(U, t):
+    u1, u2, u3 = U
+    Beta = 8
+    sigma = -1
+    du1 = Beta*u1 - u2 + sigma*u1*(u1*u1 + u2*u2)
+    du2 = u1 + Beta*u2 + sigma*u2*(u1*u1 + u2*u2)
+    du3 = -u3
+    return np.array([du1, du2, du3])
+
+shooting(dU_3d, [1,1,1], 11) 
+#dU_3d doesnt converge to single oscillation when t0 ~ 8, need to code error message
+
+# result = shooting(dU_2d, [1,1], 5) 
+# exact = exact_U(result[1])
+# res = np.subtract(result[0], exact)
+# if np.all(abs(res<1e-6)):
+#     print('Passed test')  #shows results are accurate to resolution of python
+# else:
+#     print('Test failed')
+
+

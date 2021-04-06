@@ -4,9 +4,6 @@ import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
 from odeSolver import *
 
-#initial conditions from isolated periodic orbit
-X0 = [0.2,0.2]
-
 def shooting(ODE, X0, T):
     """
     A function that uses numerical shooting to find limit cycle oscillations of 
@@ -20,18 +17,20 @@ def shooting(ODE, X0, T):
     X0 : numpy.array
         The initial guess of the initial values for the limit cycle oscillation.
     T0 : 
-        The initial guess of the initial period of oscillation guess.
+        The initial guess of the initial period of oscillation.
     Returns
     -------
     Returns a numpy.array containing the corrected initial values for the limit
     cycle oscillation. If numerical root finder fails, will return empty array.
     
     """
-    X_solution, t = solve_ode(ODE, X0, 0, 100, 0.01, 'rk4')
-    plt.plot(t, X_solution)
-    plt.show()
+    #if you want to see oscillations with input params, uncomment these 3 line
+    # X_solution, t = solve_ode(ODE, X0, 0, 100, 0.01, 'rk4')
+    # plt.plot(t, X_solution)
+    # plt.show()
+
     #root-finding
-    sol = fsolve(lambda U, f: shoot(f, U), np.append(X0, T), ODE) # need to make own root-finding
+    sol = fsolve(lambda U, f: shoot(f, U), np.append(X0, T), ODE) #need to make own root-finding, fsolve seems fairly computationally expensive
     U0 = sol[:-1]
     T = sol[-1]
     print('U0: ', U0)
@@ -39,6 +38,7 @@ def shooting(ODE, X0, T):
     X_solution, t = solve_ode(ODE, U0, 0, T, 0.01, 'rk4')
     plt.plot(t, X_solution)
     plt.show()
+    return U0, T
 
 #finding residue of integration
 def integral_res(method, f, X0, t0, T):
@@ -51,6 +51,7 @@ def phase(f, X0):
 
 #singular shot
 def shoot(f, X):
-    X0 = X[:2]
+    X0 = X[:-1]
     T = X[-1]
     return np.concatenate((integral_res('rk4', f, X0, 0, T), phase(f, X0)))
+

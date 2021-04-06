@@ -24,9 +24,6 @@ def solve_to(xn, tn, tf, delta_tmax,f, method):
         step_function = RK4_step
     
     #looping until x(tf) found
-    print('tn:', tn)
-    print('tf:', tf)
-
     while tn + delta_tmax < tf: 
         xn, tn = step_function(f, xn, tn, delta_tmax)
         x.append(xn)
@@ -41,7 +38,7 @@ def solve_to(xn, tn, tf, delta_tmax,f, method):
 
 #creating function to solve ode using Euler's or RK-4
 def solve_ode(f, x0, t0, tf, delta_t, method):
-    estimation, t = solve_to(x0,t0,tf,delta_t,f, method)
+    estimation, t = solve_to(x0, t0, tf, delta_t, f, method)
     return estimation, t
 
 #step function for Runge-Kuta 4th order
