@@ -37,10 +37,11 @@ def dU_3d(U, t):
     du3 = -u3
     return np.array([du1, du2, du3])
 
-shooting(dU_3d, [1,1,1], 11) 
-#dU_3d doesnt converge to single oscillation when t0 ~ 8, need to code error message
+shooting(dU_3d, [1,1,1], 6, fsolve)
+#dU_3d doesnt converge to single oscillation when T0 ~ 8, and coverges to two full oscillations when 
 
-# result = shooting(dU_2d, [1,1], 5) 
+#error testing for accuracy of shooting, passed
+# result = shooting(dU_2d, [1,1], 5, fsolve) 
 # exact = exact_U(result[1])
 # res = np.subtract(result[0], exact)
 # if np.all(abs(res<1e-6)):
@@ -48,4 +49,8 @@ shooting(dU_3d, [1,1,1], 11)
 # else:
 #     print('Test failed')
 
+def test_ode(X):
+    x1, x2 = X
+    return np.array([x1, 2*x2])
 
+#shooting(dU_2d, [1,1], 5, fsolve)

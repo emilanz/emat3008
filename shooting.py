@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
 from odeSolver import *
 
-def shooting(ODE, X0, T):
+def shooting(ODE, X0, T, solver):
     """
     A function that uses numerical shooting to find limit cycle oscillations of 
     any given ODE.
@@ -28,9 +28,18 @@ def shooting(ODE, X0, T):
     # X_solution, t = solve_ode(ODE, X0, 0, 100, 0.01, 'rk4')
     # plt.plot(t, X_solution)
     # plt.show()
-
+    
+    # checking dimensions of initial conditions match ODE
+    try:
+        ODE(X0, T).shape == X0.shape
+    except:
+        ValueError('Inital values (X0) do not match the dimensions of your ODE')
+    
+    #need to write script that checks convergence and isolation of limit cycle oscillation
+    
     #root-finding
-    sol = fsolve(lambda U, f: shoot(f, U), np.append(X0, T), ODE) #need to make own root-finding, fsolve seems fairly computationally expensive
+    sol = solver(lambda U, f: shoot(f, U), np.append(X0, T), ODE) #need to make own root-finding, fsolve seems fairly computationally expensive
+    print(sol)
     U0 = sol[:-1]
     T = sol[-1]
     print('U0: ', U0)

@@ -16,7 +16,6 @@ def euler_step(f, xn, tn, delta_t):
 def solve_to(xn, tn, tf, delta_tmax,f, method):
     x = [xn]
     t = [tn]
-    
     #euler or rk4
     if method in ('euler', 'Euler', 'e', 'E'):
         step_function = euler_step
@@ -39,10 +38,12 @@ def solve_to(xn, tn, tf, delta_tmax,f, method):
 #creating function to solve ode using Euler's or RK-4
 def solve_ode(f, x0, t0, tf, delta_t, method):
     estimation, t = solve_to(x0, t0, tf, delta_t, f, method)
+    
     return estimation, t
 
 #step function for Runge-Kuta 4th order
 def RK4_step(f, xn, tn, delta_t): 
+    
     k1 = delta_t*f(xn, tn) 
     k2 = delta_t*f(xn + 0.5 * k1 , tn + 0.5 * delta_t) 
     k3 = delta_t*f(xn + 0.5 * k2 , tn + 0.5 * delta_t) 
