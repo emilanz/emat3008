@@ -39,8 +39,8 @@ u_jp1 = np.zeros(x.size)      # u at next time step
 
 def main():
     # Forward Euler
-    u = Crank_Nicholson(u_j, mx, mt, lmbda)
-    
+    u = FE_neumann(u_j, mx, mt, lmbda)
+
     # Plot the final result and exact solution
     pl.plot(x,u,'ro',label='num')
     xx = np.linspace(0,L,250)
@@ -76,10 +76,68 @@ def FE(u_j, mx, mt, lmbda):
     for i in range(0, mt):
         u_jp1[1:-1] = np.matmul(A_FE, transpose(u_j[1:-1]))
         
+        # Boundary conditions
+        u_jp1[0] = 0; u_jp1[mx] = 0
+
         # Save u_j at time t[j+1]
         u_j = u_jp1
     return u_j
 
+def FE_dirichlet(u_j, mx, mt, lmbda):
+    # Creating matrix 
+    A_FE = np.zeros(shape=(mx-1, mx-1))
+    np.fill_diagonal(A_FE, 1-2*lmbda)
+    np.fill_diagonal(A_FE[1:], lmbda)
+    np.fill_diagonal(A_FE[:,1:], lmbda)
+
+    # Set initial condition
+    for i in range(0, mx+1):
+        u_j[i] = u_I(x[i])
+
+    # setting boundary conditions, constant for now. can change to function
+    p_j = 0.0002
+    q_j = 0.0003
+    bound = np.zeros(shape=(9,1))
+    bound[0] = p_j
+    bound[-1] = q_j
+    # Solve the PDE: matrix multiplications
+    for i in range(0, mt):
+        u_jp1[1:-1] = np.matmul(A_FE, transpose(u_j[1:-1])) + lmbda*transpose(bound)
+        
+        # Boundary conditions
+        # u_jp1[0] = p_j ; u_jp1[mx] = q_j
+
+        # Save u_j at time t[j+1]
+        u_j = u_jp1
+    return u_j
+
+def FE_neumann(u_j, mx, mt, lmbda):
+    # Creating matrix 
+    A_FE = np.zeros(shape=(mx+1, mx+1))
+    np.fill_diagonal(A_FE, 1-2*lmbda)
+    np.fill_diagonal(A_FE[1:], lmbda)
+    np.fill_diagonal(A_FE[:,1:], lmbda)
+
+    # Set initial condition
+    for i in range(0, mx+1):
+        u_j[i] = u_I(x[i])
+
+    # setting boundary conditions, constant for now. can change to function
+    P_j = 0.0002
+    Q_j = 0.0003
+    bound = np.zeros(shape=(11,1))
+    bound[0] = -P_j
+    bound[-1] = Q_j
+    # Solve the PDE: matrix multiplications
+    for i in range(0, mt):
+        u_jp1 = np.matmul(A_FE, transpose(u_j)) + 2*deltax*lmbda*transpose(bound)
+        print(u_jp1)
+        # Boundary conditions
+        # u_jp1[0] = p_j ; u_jp1[mx] = q_j
+
+        # Save u_j at time t[j+1]
+        u_j = u_jp1
+    return u_j
 
 def BE(u_j, mx, mt, lmbda):
     # Creating matrix 
