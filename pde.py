@@ -40,7 +40,7 @@ u_jp1 = np.zeros(x.size)      # u at next time step
 def main():
     # Forward Euler
     u = FE_neumann(u_j, mx, mt, lmbda)
-
+    print(u)
     # Plot the final result and exact solution
     pl.plot(x,u,'ro',label='num')
     xx = np.linspace(0,L,250)
@@ -128,15 +128,17 @@ def FE_neumann(u_j, mx, mt, lmbda):
     bound = np.zeros(shape=(11,1))
     bound[0] = -P_j
     bound[-1] = Q_j
+    bound = transpose(bound)
+
     # Solve the PDE: matrix multiplications
     for i in range(0, mt):
-        u_jp1 = np.matmul(A_FE, transpose(u_j)) + 2*deltax*lmbda*transpose(bound)
-        print(u_jp1)
-        # Boundary conditions
-        # u_jp1[0] = p_j ; u_jp1[mx] = q_j
-
+        u_jp1 = np.matmul(A_FE, transpose(u_j)) + 2*deltax*lmbda*bound
+        
         # Save u_j at time t[j+1]
-        u_j = u_jp1
+        u_j = u_jp1[-1]
+
+        # Boundary conditions
+        u_j[0] = P_j ; u_j[mx] = Q_j
     return u_j
 
 def BE(u_j, mx, mt, lmbda):
