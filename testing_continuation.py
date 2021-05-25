@@ -2,6 +2,9 @@ from continuation import *
 import numpy as np 
 import matplotlib.pyplot as plt
 
+# no discretisation error prompt, comment to run next part
+sols = continuation(alg_cubic, np.array([1.52137971,-2]),  np.linspace(-1.98, 2, 200))
+
 # continuation for algebraic cubic function
 sols = continuation(alg_cubic, np.array([1.52137971,-2]),  np.linspace(-1.98, 2, 200))
 plt.plot(np.linspace(-2, 2, 201), sols)

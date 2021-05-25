@@ -124,7 +124,7 @@ def Crank_Nicholson(u_j, mx, mt, lmbda):
         u_j = u_jp1 
 
     return u_j
-def solve(kappa, L, T, mx, mt, solver):
+def solve(kappa, L, T, mx, mt, method):
     """
     A function that uses finite differences method to solve 1D heat equation PDE.
 
@@ -140,10 +140,10 @@ def solve(kappa, L, T, mx, mt, solver):
         Number of gridpoints in spatial domain.
     mt : integer
         Number of gridpoints in time domain.
-    solver : 
-        Solver to choose from list: BE, FE, FE_neumann, FE_dirichlet, Crank_Nicholson.
+    method : 
+        Method to solve with from list: BE, FE, FE_neumann, FE_dirichlet, Crank_Nicholson.
 
-        
+
     Returns
     -------
     Returns a numpy.array containing the final row grid values for u_j. 
@@ -176,11 +176,12 @@ def solve(kappa, L, T, mx, mt, solver):
     print("lambda=",lmbda)
 
     # solving
-    u = solver(u_j, mx, mt, lmbda)
+    u = method(u_j, mx, mt, lmbda)
     # Plot the final result and exact solution
     pl.plot(x, u,'ro',label='num')
     xx = np.linspace(0,L,250)
     pl.plot(xx,u_exact(xx,T),'b-',label='exact')
+    pl.title(str(method.__name__))
     pl.xlabel('x')
     pl.ylabel('u(x,0.5)')
     pl.legend(loc='upper right')

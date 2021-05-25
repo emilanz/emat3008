@@ -68,12 +68,13 @@ def solve_ode(f, x0, t0, tf, delta_t, method='rk4', plot: bool=False):
         Boolean True/False to create basic plot of solution against time. 
         Default is False.    
 
-        
+
     Returns
     -------
     Returns two arrays containing the values for x and the values for t.
     
     """
+
     estimation, t = solve_to(x0, t0, tf, delta_t, f, method)
     estimation = np.array(estimation)
     if plot==True:

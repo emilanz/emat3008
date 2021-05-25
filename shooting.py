@@ -5,6 +5,17 @@ import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
 from odeSolver import *
 
+# creating base error class and subclasses for each error type
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+class InitialValueError(Error):
+    """Exception raised for initial value dimension errors."""
+
+class SolverConvergenceError(Error):
+    """Exception raised if solver fails to converge."""  #not implemented but created error class for it.
+
 def shooting(ODE, X0, T0, solver, plot: bool=False):
     """
     A function that uses numerical shooting to find limit cycle oscillations of 
@@ -22,7 +33,7 @@ def shooting(ODE, X0, T0, solver, plot: bool=False):
     plot : Boolean
         If plot=True then function will plot isolated limit cycle.
 
-        
+
     Returns
     -------
     Returns a numpy.array containing the corrected initial values for the limit
@@ -36,7 +47,7 @@ def shooting(ODE, X0, T0, solver, plot: bool=False):
     
     # checking dimensions of initial conditions match ODE
     try: ODE(X0, T0).shape == X0.shape
-    except: raise(ValueError('Inital values (X0) do not match the dimensions of your ODE'))
+    except: raise(InitialValueError('Inital values (X0) do not match the dimensions of your ODE'))
     
     
     #need to write script that checks convergence and isolation of limit cycle oscillation

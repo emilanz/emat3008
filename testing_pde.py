@@ -22,4 +22,4 @@ t = np.linspace(0, T, mt+1)     # mesh points in time
 deltax = x[1] - x[0]            # gridspacing in x
 deltat = t[1] - t[0]            # gridspacing in t
 lmbda = kappa*deltat/(deltax**2)    # mesh fourier number
-u = solve(kappa, L, T, mx, mt, Crank_Nicholson)
+u = solve(kappa, L, T, mx, mt, BE)  #can change method to BE, FE, FE_neumann, FE_dirichlet

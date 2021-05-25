@@ -33,13 +33,12 @@ def solve_predprey():
 
 def hopf_bif():
     U0 = [1,1,1]
-    X, t = solve_ode(Hop_bif_3D, U0, 0, 100, 0.01, 'rk4')
+    X, t = solve_ode(Hop_bif_3D, U0, 0, 20, 0.01, 'rk4')
     return X, t
 
 
 
 X, t = solve_predprey()
-print('X: ', X)
 #plotting predator-prey against time
 plt.plot(t, X[:,0], 'g', label='prey')
 plt.plot(t, X[:,1], 'r', label='predator')
@@ -52,7 +51,6 @@ plt.show()
 # plt.plot(X[:,0], X[:,1])
 
 X, t = hopf_bif()
-print('X: ', X)
 #plotting predator-prey against time
 plt.plot(t, X[:,0], 'g', label='u1')
 plt.plot(t, X[:,1], 'r', label='u2')

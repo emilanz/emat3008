@@ -7,6 +7,13 @@ from math import nan
 from scipy.optimize import fsolve, root
 import matplotlib.pyplot as plt
 
+# for error handling 
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+class InputError(Error):
+    """Exception raised for input errors. Specifically discretisation."""
 
 # defining continuation function
 def continuation(F, x1, param, discretisation=''):
@@ -54,7 +61,7 @@ def continuation(F, x1, param, discretisation=''):
         # for p in param:
         #     sol1 = fsolve(lambda U, f: shoot(f, U), x1, F)
         #     sols = np.append(sols, sol2)
-    else:
+    elif discretisation == 'algebraic':
         c1 = x1[-1]
         x1 = x1[:-1]
         sol1 = fsolve(F, x1, c1)
@@ -70,6 +77,8 @@ def continuation(F, x1, param, discretisation=''):
             sol2 = fsolve(F, sol2, c)
             sols = np.append(sols, sol2)
         return sols
+    else: 
+        raise InputError('You have not selected a method of discretisation. Please type a string: "shooting" or "algebraic" as your input.')
 
 def secant(X1, X2):
     dX = X2 - X1

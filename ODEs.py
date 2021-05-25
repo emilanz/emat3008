@@ -36,7 +36,3 @@ def Hop_bif_3D(U, t):
     du2 = u1 + Beta*u2 + sigma*u2*(u1*u1 + u2*u2)
     du3 = -u3
     return np.array([du1, du2, du3])
-
-def alg_cubic(x, c):
-    x = x[0]
-    return np.array([x*x*x - x + c])
